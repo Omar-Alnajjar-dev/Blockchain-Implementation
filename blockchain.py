@@ -3,9 +3,11 @@ import hashlib
 import json
 from time import time
 from uuid import uuid4
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import requests
 from urllib.parse import urlparse
+from datetime import datetime
+
 
 class Blockchain(object):
     difficulty_target = "0000"
@@ -15,11 +17,15 @@ class Blockchain(object):
         return hashlib.sha256(block_encoded).hexdigest()
 
     def __init__(self):
+        
        # stores all the blocks in the entire blockchain
         self.chain = []
         # temporarily stores the transactions for the
         # current block
         self.current_transactions = []
+        
+        #inizlize nodes
+        self.nodes = set() 
        
         # create the genesis block with a specific fixed hash
         # of previous block genesis block starts with index 0
@@ -153,12 +159,44 @@ class Blockchain(object):
     
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
+
 # generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('_', "")
 # instantiate the Blockchain
 blockchain = Blockchain()
 # return the entire blockchain
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
+@app.route('/transactions/new', methods=['GET', 'POST'])
+def new_transaction():
+    if request.method == 'POST':
+        # get the value passed in from the client
+        values = request.get_json()
+        # check that the required fields are in the POST'ed data
+        required_fields = ['sender', 'recipient', 'amount']
+    
+        if not all(k in values for k in required_fields):
+            return ('Missing fields', 400)
+        # create a new transaction
+        index = blockchain.add_transaction(
+        values['sender'],
+        values['recipient'],
+        values['amount']
+        )
+        response = {'message':
+        f'Transaction will be added to Block {index}'}
+        return (jsonify(response), 201)
+    else:
+        # Render a form to accept transaction details
+        return render_template('new_transaction.html')
+    
+    
 @app.route('/blockchain', methods=['GET'])
 def full_chain():
     response = {
@@ -169,11 +207,7 @@ def full_chain():
 
 
 @app.route('/mine', methods=['GET'])
-def mine_block():
-
-# the miner must receive a reward for finding the proof
-# the sender is "0" to signify that this node has mined a new coin
-
+def mine_block_page():
     blockchain.add_transaction(
     sender="0",
     recipient=node_identifier,
@@ -190,6 +224,7 @@ def mine_block():
     # hash and the current nonce
     block = blockchain.append_block(nonce, last_block_hash)
     response = {
+                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 'message': "New Block Mined",
                 'index': block['index'],
                 'hash_of_previous_block':
@@ -197,58 +232,42 @@ def mine_block():
                 'nonce': block['nonce'],
                 'transactions': block['transactions'],
                 }
-    return jsonify(response), 200
+    
+    return render_template('mined_block.html', block=response) 
 
-@app.route('/transactions/new', methods=['POST'])
-def new_transaction():
-    # get the value passed in from the client
-    values = request.get_json()
-    # check that the required fields are in the POST'ed data
-    required_fields = ['sender', 'recipient', 'amount']
-
-    if not all(k in values for k in required_fields):
-        return ('Missing fields', 400)
-    # create a new transaction
-    index = blockchain.add_transaction(
-    values['sender'],
-    values['recipient'],
-    values['amount']
-    )
-    response = {'message':
-    f'Transaction will be added to Block {index}'}
-    return (jsonify(response), 201)
+@app.route('/blocks', methods=['GET'])
+def show_blocks():
+    return render_template('blocks.html', blocks=blockchain.chain)
 
 @app.route('/nodes/add_nodes', methods=['POST'])
 def add_nodes():
-    # get the nodes passed in from the client
-    values = request.get_json()
-    nodes = values.get('nodes')
-    if nodes is None:
-        return "Error: Missing node(s) info", 400
+    nodes = request.get_json().get('nodes')
+    if nodes is None or not isinstance(nodes, list):
+        return jsonify({'message': 'Invalid or missing nodes data'}), 400
+
     for node in nodes:
         blockchain.add_node(node)
-    response = {
-                'message': 'New nodes added',
-                'nodes': list(blockchain.nodes),
-                }
-    return jsonify(response), 201
+
+    # Get nodes for rendering in the template
+    node_list = list(blockchain.nodes)
+
+    # Render the template and pass node_list data to the HTML
+    return render_template('nodes_added.html', nodes=node_list)
 
 
 @app.route('/nodes/sync', methods=['GET'])
 def sync():
     updated = blockchain.update_blockchain()
+
     if updated:
-        response = {
-                    'message':
-                    'The blockchain has been updated to the latest',
-                    'blockchain': blockchain.chain
-                    }
+        updated_message = 'The blockchain has been updated to the latest'
     else:
-        response = {
-                    'message': 'Our blockchain is the latest',
-                    'blockchain': blockchain.chain
-                    }
-        return jsonify(response), 200    
+        updated_message = 'Our blockchain is the latest'
+
+    # Pass the updated_message and blockchain chain data to the template
+    return render_template('sync_nodes.html', message=updated_message, blockchain=blockchain.chain)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(sys.argv[1]))
+    app.run(host='0.0.0.0', port=5000)
+    
+    
