@@ -86,6 +86,23 @@ class Blockchain(object):
             })
             return self.last_block['index'] + 1
 
+    def decrypt_candidate_totals(self):
+        decrypted_totals = {}
+        for candidate_port, encrypted_total in self.candidates.items():
+            # Decrypt each candidate's total
+            decrypted_total = DecryptionFunction(encrypted_total)
+            decrypted_totals[candidate_port] = decrypted_total
+
+        return decrypted_totals
+
+    def find_winner(self):
+        decrypted_totals = self.decrypt_candidate_totals()
+
+        # Find the candidate's port with the highest total
+        winner = max(decrypted_totals, key=decrypted_totals.get)
+        return winner
+
+
     @property
     def last_block(self):
         return self.chain[-1]
@@ -176,6 +193,34 @@ def mine_block_page():
 @app.route('/blocks', methods=['GET'])
 def show_blocks():
     return render_template('blocks.html', blocks=blockchain.chain)
+
+
+# Voting process
+
+@app.route('/vote', methods=['POST'])
+def vote():
+    values = request.get_json()
+
+    # Assuming 'candidate_port' is provided in the JSON
+    candidate_port = values.get('candidate_port')
+
+    # Sending 0 coins to all candidates except the chosen one (sending 1)
+    # From node initialization each node must keep a list of candidate's ports and it's own port
+    for port in all_candidate_ports:
+        amount = 0 if port != candidate_port else 1
+        blockchain.add_transaction(sender=my_port, recipient=port, amount=EncryptionFunction(amount))
+
+    response = {'message': 'Vote recorded'}
+    return jsonify(response), 200
+
+
+# Determining the winner
+@app.route('/result', methods=['GET'])
+def get_winner():
+    winner_port = blockchain.find_winner()
+    response = {'winner_port': winner_port}
+    return jsonify(response), 200
+
 
 @app.route('/nodes/add_nodes', methods=['POST'])
 def add_nodes():
