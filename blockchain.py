@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 from datetime import datetime
 from threading import Lock
 import sys
-from RSA import *
 
 class Blockchain(object):
     difficulty_target = "00000" 
@@ -69,7 +68,7 @@ class Blockchain(object):
                 balances[recipient] = balances.get(recipient, 0) + amount
         return balances
 
-    def add_transaction(self, sender, recipient, amount, fee):
+    def add_transaction(self, sender, recipient, amount):
         with self.lock:
             balances = self.calculate_balances()
             print(balances)
@@ -77,18 +76,12 @@ class Blockchain(object):
                 for tx in block['transactions']:
                     if tx['sender'] == sender and tx['sender'] != '0':
                         raise ValueError('The coin has already been spent')
-            # if balances.get(sender, 0) < amount + fee:
-            #     raise ValueError('Insufficient balance including fee')
+            if balances.get(sender, 0) < amount and sender != '0':
+                raise ValueError('Insufficient balance')
             self.current_transactions.append({
                 'sender': sender,
                 'recipient': recipient,
                 'amount': amount,
-            })
-            # Fee transaction
-            self.current_transactions.append({
-                'sender': sender,
-                'recipient': 'miner_address',  # Replace with miner's address
-                'amount': fee,
             })
             return self.last_block['index'] + 1
 
@@ -167,11 +160,11 @@ def home():
 def new_transaction():
     if request.method == 'POST':
         values = request.get_json()
-        required_fields = ['sender', 'recipient', 'amount', 'fee']
+        required_fields = ['sender', 'recipient', 'amount']
         if not all(k in values for k in required_fields):
             return ('Missing fields', 400)
         try:
-            index = blockchain.add_transaction(values['sender'], values['recipient'], values['amount'], values['fee'])
+            index = blockchain.add_transaction(values['sender'], values['recipient'], values['amount'])
         except ValueError as e:
             return jsonify({'message': str(e)}), 400
         response = {'message': f'Transaction will be added to Block {index}'}
@@ -192,7 +185,7 @@ def mine_block_page():
     # node_coins.append(blockchain.generate_keys())
     # coin_address = rsa_encrypt(node_coins[-1][1], int(node_identifier.replace('-', ''), 16))
     node_identifier_list.append(str(uuid4()).replace('_', ""))
-    blockchain.add_transaction(sender="0", recipient=node_identifier_list[-2], amount=1, fee=0)
+    blockchain.add_transaction(sender="0", recipient=node_identifier_list[-2], amount=1)
     last_block_hash = blockchain.hash_block(blockchain.last_block)
     index = len(blockchain.chain)
     nonce = blockchain.proof_of_work(index, last_block_hash, blockchain.current_transactions)
