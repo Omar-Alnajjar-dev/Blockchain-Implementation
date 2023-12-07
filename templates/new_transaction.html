@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Transaction</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for the page title and form */
+        .page-title-container {
+            padding: 1rem 0; /* Matches the blocks.html padding */
+            background: rgb(0, 81, 255); /* Same color as blocks.html */
+            color: #ffffff;
+            margin-bottom: 2rem; /* Consistent with blocks.html */
+            border-radius: 0.5rem; /* Consistent with blocks.html */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Consistent with blocks.html */
+            text-align: center;
+        }
+        .page-title {
+            font-size: 2.5rem; /* Consistent with blocks.html */
+            font-weight: 700; /* Consistent with blocks.html */
+        }
+        .footer {
+            position: fixed; /* Consistent with blocks.html */
+            bottom: 0;
+            width: 100%;
+            height: 4rem; /* Consistent with blocks.html */
+            background-color: #343a40; /* Consistent with blocks.html */
+            color: white;
+            text-align: center;
+            padding: 1rem 0; /* Consistent with blocks.html */
+        }
+        form {
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        label, input {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        input[type="text"] {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem; /* Consistent with blocks.html */
+            border: 1px solid #ced4da; /* Bootstrap default for inputs */
+        }
+        input[type="submit"] {
+            background: #007bff; /* Bootstrap primary color */
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem; /* Consistent with blocks.html */
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3; /* Darken the button on hover */
+        }
+        .btn-back {
+            display: block;
+            width: auto; /* Allow the button to fit the text */
+            margin: 2rem auto; /* Center the button and add spacing */
+            padding: 0.5rem 1rem; /* Padding to increase button size */
+            background: #007bff; /* Bootstrap primary color */
+            color: white;
+            text-decoration: none;
+            border-radius: 0.25rem; /* Consistent with blocks.html */
+        }
+        .btn-back:hover {
+            background: #0056b3; /* Darken the button on hover */
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Blockchain</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="/">Home</a>
+            <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
+            <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title-container">
+        <h1 class="page-title">New Transaction</h1>
+    </div>
+
+    <form method="post" action="/transactions/new">
+        <label for="sender"><b>Sender:</b></label>
+        <input type="text" id="sender" name="sender" class="form-control">
+        <label for="recipient"><b>Recipient:</b></label>
+        <input type="text" id="recipient" name="recipient" class="form-control">
+        <label for="amount"><b>Amount:</b></label>
+        <input type="text" id="amount" name="amount" class="form-control">
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+    
+    <a href="/" class="btn btn-primary btn-back">Back to Home</a>
+</div>
+
+<footer class="footer bg-dark text-white py-3">
+    <div class="container">
+        <span>&copy; Blockchain Project</span>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
