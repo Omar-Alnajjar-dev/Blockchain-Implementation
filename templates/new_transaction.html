@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>New Transaction</title>
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <h1>New Transaction</h1>
-    <form method="post" action="/transactions/new">
+    <form id="transactionForm" method="POST" action="/transactions/new">
         <label for="sender">Sender:</label><br>
         <input type="text" id="sender" name="sender"><br>
         <label for="recipient">Recipient:</label><br>
@@ -17,10 +19,30 @@
         <input type="submit" value="Submit">
     </form>
     <button class="btn btn-primary m-2" onclick="window.location.href='/'">Back to Home</button>
-
+    <!-- <script>
+        const transactionForm = document.getElementById("transactionForm");
+        transactionForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log(new FormData(transactionForm));
+            // sending a POST request to the server
+            fetch("/transactions/new", {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=UTF-8" },
+                body: new FormData(transactionForm)
+            }).then((res) => {
+                if (res.status === 200) {
+                    window.location.href = "/";
+                } else {
+                    const error = document.getElementById("error");
+                    error.innerHTML = "Invalid transaction";
+                }
+            });
+        });
+    </script> -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
+
 </body>
+
 </html>
