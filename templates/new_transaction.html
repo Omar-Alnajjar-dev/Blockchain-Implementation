@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>New Transaction</title>
@@ -68,10 +69,10 @@
         .btn-back:hover {
             background: #0056b3; /* Darken the button on hover */
         }
-    </style>
+  </style>
 </head>
-<body>
 
+<body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Blockchain</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +111,26 @@
     </div>
 </footer>
 
+<!-- <script>
+        const transactionForm = document.getElementById("transactionForm");
+        transactionForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log(new FormData(transactionForm));
+            // sending a POST request to the server
+            fetch("/transactions/new", {
+                method: "POST",
+                headers: { "Content-type": "application/json; charset=UTF-8" },
+                body: new FormData(transactionForm)
+            }).then((res) => {
+                if (res.status === 200) {
+                    window.location.href = "/";
+                } else {
+                    const error = document.getElementById("error");
+                    error.innerHTML = "Invalid transaction";
+                }
+            });
+        });
+    </script> -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

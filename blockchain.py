@@ -71,8 +71,13 @@ class Blockchain(object):
     def add_transaction(self, sender, recipient, amount, fee):
         with self.lock:
             balances = self.calculate_balances()
-            if balances.get(sender, 0) < amount + fee:
-                raise ValueError('Insufficient balance including fee')
+            print(balances)
+            for block in self.chain:
+                for tx in block['transactions']:
+                    if tx['sender'] == sender and tx['sender'] != '0':
+                        raise ValueError('The coin has already been spent')
+            # if balances.get(sender, 0) < amount + fee:
+            #     raise ValueError('Insufficient balance including fee')
             self.current_transactions.append({
                 'sender': sender,
                 'recipient': recipient,
