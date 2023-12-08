@@ -10,7 +10,7 @@ from threading import Lock
 import sys
 
 class Blockchain(object):
-    difficulty_target = "00000" 
+    difficulty_target = "00" 
 
     def hash_block(self, block):
         block_encoded = json.dumps(block, sort_keys=True).encode()
@@ -43,6 +43,11 @@ class Blockchain(object):
     def valid_proof(self, index, hash_of_previous_block, transactions, nonce):
         content = f'{index}{hash_of_previous_block}{transactions}{nonce}'.encode()
         content_hash = hashlib.sha256(content).hexdigest()
+        print(hashlib.sha256(content))
+        print(content)
+        print(content_hash)
+        print(content_hash[:len(self.difficulty_target)])
+        print(self.difficulty_target)
         return content_hash[:len(self.difficulty_target)] == self.difficulty_target
 
     def append_block(self, nonce, hash_of_previous_block):
@@ -101,7 +106,6 @@ class Blockchain(object):
         winner = max(decrypted_totals, key=decrypted_totals.get)
         return winner
 
-
     @property
     def last_block(self):
         return self.chain[-1]
@@ -117,24 +121,33 @@ class Blockchain(object):
             block = chain[current_index]
             if block['hash_of_previous_block'] != self.hash_block(last_block):
                 return False
-            if not self.valid_proof(current_index, block['hash_of_previous_block'], block['transactions'], block['nonce']):
-                return False
             last_block = block
             current_index += 1
         return True
 
     def update_blockchain(self):
+        # get the nodes around us that has been registered
         neighbours = self.nodes
         new_chain = None
+        # for simplicity, look for chains longer than ours
         max_length = len(self.chain)
+        # grab and verify the chains from all the nodes in our
+        # network
         for node in neighbours:
+            # get the blockchain from the other nodes
             response = requests.get(f'http://{node}/blockchain')
+            
             if response.status_code == 200:
                 length = response.json()['length']
                 chain = response.json()['chain']
-                if length > max_length and self.valid_chain(chain):
-                    max_length = length
-                    new_chain = chain
+             
+            # check if the length is longer and the chain
+            # is valid
+            if length > max_length and self.valid_chain(chain):
+                max_length = length
+                new_chain = chain
+            # replace our chain if we discovered a new, valid
+            # chain longer than ours
         if new_chain:
             self.chain = new_chain
             return True
@@ -198,7 +211,37 @@ def mine_block_page():
         'nonce': block['nonce'],
         'transactions': block['transactions'],
     }
+    
     return render_template('mined_blocks.html', block=response) 
+def mine_block():
+
+# the miner must receive a reward for finding the proof
+# the sender is "0" to signify that this node has mined a new coin
+
+    blockchain.add_transaction(
+    sender="0",
+    recipient=node_identifier,
+    amount=1,
+    )
+        # obtain the hash of last block in the blockchain
+    last_block_hash = blockchain.hash_block(blockchain.last_block)
+    # using PoW, get the nonce for the new block to be added
+    # to the blockchain
+    index = len(blockchain.chain)
+    nonce = blockchain.proof_of_work(index, last_block_hash,
+    blockchain.current_transactions)
+    # add the new block to the blockchain using the last block
+    # hash and the current nonce
+    block = blockchain.append_block(nonce, last_block_hash)
+    response = {
+                'message': "New Block Mined",
+                'index': block['index'],
+                'hash_of_previous_block':
+                block['hash_of_previous_block'],
+                'nonce': block['nonce'],
+                'transactions': block['transactions'],
+                }
+    return jsonify(response), 200
 
 @app.route('/blocks', methods=['GET'])
 def show_blocks():
@@ -232,24 +275,29 @@ def get_winner():
     return jsonify(response), 200
 
 
-@app.route('/nodes/add_nodes', methods=['POST'])
-def add_nodes():
-    nodes = request.get_json().get('nodes')
-    if nodes is None or not isinstance(nodes, list):
-        return jsonify({'message': 'Invalid or missing nodes data'}), 400
-    for node in nodes:
-        blockchain.add_node(node)
-    node_list = list(blockchain.nodes)
-    return render_template('nodes_added.html', nodes=node_list)
+@app.route('/nodes/add_node', methods=['GET', 'POST'])
+def add_node():
+    if request.method == 'POST':
+        port = request.form.get('port')
+        if not port:
+            return "Error: Missing port information", 400
 
-@app.route('/nodes/sync', methods=['GET'])
-def sync():
-    updated = blockchain.update_blockchain()
-    if updated:
-        updated_message = 'The blockchain has been updated to the latest'
-    else:
-        updated_message = 'Our blockchain is the latest'
-    return render_template('sync_nodes.html', message=updated_message, blockchain=blockchain.chain)
+        node_address = f"http://127.0.0.1:{port}"
+        blockchain.add_node(node_address)  # Add the new node to the blockchain network
+        return "Node added successfully", 201
+    return render_template('add_node.html')
+
+@app.route('/nodes/sync', methods=['GET', 'POST'])
+def sync_nodes():
+    if request.method == 'GET':
+        return render_template('sync_nodes.html')
+    elif request.method == 'POST':
+        updated = blockchain.update_blockchain()
+
+        if updated:
+            return jsonify({'message': 'Blockchain updated'}), 200
+        else:
+            return jsonify({'message': 'Blockchain already up-to-date'}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(sys.argv[1]))
