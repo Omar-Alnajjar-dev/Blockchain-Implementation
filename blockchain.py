@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 from datetime import datetime
 from threading import Lock
 import sys
+from Paillier import *
 
 class Blockchain(object):
     difficulty_target = "00" 
@@ -22,6 +23,7 @@ class Blockchain(object):
         self.nodes = set()
         self.lock = Lock()
         self.create_genesis_block()
+        self.crpyt = Paillier()
 
     def create_genesis_block(self):
         genesis_transaction = {
@@ -43,11 +45,6 @@ class Blockchain(object):
     def valid_proof(self, index, hash_of_previous_block, transactions, nonce):
         content = f'{index}{hash_of_previous_block}{transactions}{nonce}'.encode()
         content_hash = hashlib.sha256(content).hexdigest()
-        print(hashlib.sha256(content))
-        print(content)
-        print(content_hash)
-        print(content_hash[:len(self.difficulty_target)])
-        print(self.difficulty_target)
         return content_hash[:len(self.difficulty_target)] == self.difficulty_target
 
     def append_block(self, nonce, hash_of_previous_block):
@@ -90,12 +87,13 @@ class Blockchain(object):
             })
             return self.last_block['index'] + 1
    
-   
     def decrypt_candidate_totals(self):
         decrypted_totals = {}
+        neighbours = self.nodes
+        candidate_ports = [node[0] for node in neighbours if node[1] == 'C']
         for candidate_port, encrypted_total in self.candidates.items():
             # Decrypt each candidate's total
-            decrypted_total = DecryptionFunction(encrypted_total)
+            decrypted_total = self.crpyt.decrypt(encrypted_total)
             decrypted_totals[candidate_port] = decrypted_total
 
         return decrypted_totals
@@ -113,8 +111,8 @@ class Blockchain(object):
         return self.chain[-1]
 
     def add_node(self, address):
-        parsed_url = urlparse(address)
-        self.nodes.add(parsed_url.netloc)
+        parsed_url = urlparse(address[0])
+        self.nodes.add((parsed_url.netloc, address[1]))
 
     def valid_chain(self, chain):
         last_block = chain[0]
@@ -222,29 +220,6 @@ def mine_block_page():
 def show_blocks():
     return render_template('blocks.html', blocks=blockchain.chain)
 
-
-# Voting process
-
-@app.route('/vote', methods=['POST'])
-def vote():
-    values = request.get_json()
-
-    # Assuming 'candidate_port' is provided in the JSON
-    candidate_port = values.get('candidate_port')
-
-    # Sending 0 coins to all candidates except the chosen one (sending 1)
-    # From node initialization each node must keep a list of candidate's ports and it's own port
-    # get the nodes around us that has been registered
-    neighbours = blockchain.nodes
-    candidate_ports = [node[0] for node in neighbours if node[1] == 'C']
-    for port in candidate_ports:
-        amount = 0 if port != candidate_port else 1
-        blockchain.add_transaction(sender=9999, recipient=port, amount=EncryptionFunction(amount))
-
-    response = {'message': 'Vote recorded'}
-    return jsonify(response), 200
-
-
 # Determining the winner
 @app.route('/result', methods=['GET'])
 def get_winner():
@@ -263,13 +238,30 @@ def add_node():
             return "Error: Missing port or role information", 400
 
         node_address = f"http://127.0.0.1:{port}"
-        node_info = (port, role)  # Combine port and role into a tuple
-        blockchain.add_node((node_address, node_info))  # Add the new node to the blockchain network
+        blockchain.add_node((node_address, role))  # Add the new node to the blockchain network
         return "Node added successfully", 201
 
     return render_template('add_node.html')
 
+@app.route('/vote', methods=['GET', 'POST'])
+def vote():
+    if request.method == 'POST':
+        candidate_port = f"127.0.0.1:{request.form.get('candidate_port')}"
 
+        # Sending 0 coins to all candidates except the chosen one (sending 1)
+        # From node initialization each node must keep a list of candidate's ports and its own port
+        # get the nodes around us that have been registered
+        neighbours = blockchain.nodes
+        candidate_ports = [node[0] for node in neighbours if node[1] == 'C']
+        for port in candidate_ports:
+            amount = 0 if port != candidate_port else 1
+            blockchain.add_transaction(sender='0', recipient=port, amount=blockchain.crpyt.encrypt(amount))
+            print(port)
+            print(candidate_port)
+        response = {'message': 'Vote recorded'}
+        return jsonify(response), 200
+    elif request.method =="GET":
+        return render_template('vote_page.html')
 
 @app.route('/nodes/sync', methods=['GET', 'POST'])
 def sync_nodes():
@@ -284,4 +276,4 @@ def sync_nodes():
             return jsonify({'message': 'Blockchain already up-to-date'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(5005))
+    app.run(host='0.0.0.0', port=int(sys.argv[1]))
