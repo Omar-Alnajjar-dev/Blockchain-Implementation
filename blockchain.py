@@ -89,7 +89,8 @@ class Blockchain(object):
                 'amount': amount,
             })
             return self.last_block['index'] + 1
-
+   
+   
     def decrypt_candidate_totals(self):
         decrypted_totals = {}
         for candidate_port, encrypted_total in self.candidates.items():
@@ -106,6 +107,7 @@ class Blockchain(object):
         winner = max(decrypted_totals, key=decrypted_totals.get)
         return winner
 
+
     @property
     def last_block(self):
         return self.chain[-1]
@@ -121,6 +123,8 @@ class Blockchain(object):
             block = chain[current_index]
             if block['hash_of_previous_block'] != self.hash_block(last_block):
                 return False
+            if not self.valid_proof(current_index, block['hash_of_previous_block'], block['transactions'], block['nonce']):
+                return False
             last_block = block
             current_index += 1
         return True
@@ -128,12 +132,13 @@ class Blockchain(object):
     def update_blockchain(self):
         # get the nodes around us that has been registered
         neighbours = self.nodes
+        ports_only = [ports[0] for ports in neighbours]
         new_chain = None
         # for simplicity, look for chains longer than ours
         max_length = len(self.chain)
         # grab and verify the chains from all the nodes in our
         # network
-        for node in neighbours:
+        for node in ports_only:
             # get the blockchain from the other nodes
             response = requests.get(f'http://{node}/blockchain')
             
@@ -211,37 +216,7 @@ def mine_block_page():
         'nonce': block['nonce'],
         'transactions': block['transactions'],
     }
-    
     return render_template('mined_blocks.html', block=response) 
-def mine_block():
-
-# the miner must receive a reward for finding the proof
-# the sender is "0" to signify that this node has mined a new coin
-
-    blockchain.add_transaction(
-    sender="0",
-    recipient=node_identifier,
-    amount=1,
-    )
-        # obtain the hash of last block in the blockchain
-    last_block_hash = blockchain.hash_block(blockchain.last_block)
-    # using PoW, get the nonce for the new block to be added
-    # to the blockchain
-    index = len(blockchain.chain)
-    nonce = blockchain.proof_of_work(index, last_block_hash,
-    blockchain.current_transactions)
-    # add the new block to the blockchain using the last block
-    # hash and the current nonce
-    block = blockchain.append_block(nonce, last_block_hash)
-    response = {
-                'message': "New Block Mined",
-                'index': block['index'],
-                'hash_of_previous_block':
-                block['hash_of_previous_block'],
-                'nonce': block['nonce'],
-                'transactions': block['transactions'],
-                }
-    return jsonify(response), 200
 
 @app.route('/blocks', methods=['GET'])
 def show_blocks():
@@ -259,9 +234,12 @@ def vote():
 
     # Sending 0 coins to all candidates except the chosen one (sending 1)
     # From node initialization each node must keep a list of candidate's ports and it's own port
-    for port in all_candidate_ports:
+    # get the nodes around us that has been registered
+    neighbours = blockchain.nodes
+    candidate_ports = [node[0] for node in neighbours if node[1] == 'C']
+    for port in candidate_ports:
         amount = 0 if port != candidate_port else 1
-        blockchain.add_transaction(sender=my_port, recipient=port, amount=EncryptionFunction(amount))
+        blockchain.add_transaction(sender=9999, recipient=port, amount=EncryptionFunction(amount))
 
     response = {'message': 'Vote recorded'}
     return jsonify(response), 200
@@ -279,13 +257,19 @@ def get_winner():
 def add_node():
     if request.method == 'POST':
         port = request.form.get('port')
-        if not port:
-            return "Error: Missing port information", 400
+        role = request.form.get('role')
+
+        if not port or not role:
+            return "Error: Missing port or role information", 400
 
         node_address = f"http://127.0.0.1:{port}"
-        blockchain.add_node(node_address)  # Add the new node to the blockchain network
+        node_info = (port, role)  # Combine port and role into a tuple
+        blockchain.add_node((node_address, node_info))  # Add the new node to the blockchain network
         return "Node added successfully", 201
+
     return render_template('add_node.html')
+
+
 
 @app.route('/nodes/sync', methods=['GET', 'POST'])
 def sync_nodes():
@@ -300,4 +284,4 @@ def sync_nodes():
             return jsonify({'message': 'Blockchain already up-to-date'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(sys.argv[1]))
+    app.run(host='0.0.0.0', port=int(5005))

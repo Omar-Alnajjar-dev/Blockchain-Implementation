@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Add Node</title>
 </head>
-
 <body>
-    <h1>Add Node to Blockchain Network</h1>
-    <form method="POST">
-        <label for="port">Port:</label><br>
+    <h1>Add Node</h1>
+    <form action="/nodes/add_node" method="POST">
+        <label for="port">Port:</label>
         <input type="text" id="port" name="port"><br><br>
+        
+        <label for="role">Role (C for candidate or V for voter):</label>
+        <input type="text" id="role" name="role"><br><br>
+
         <input type="submit" value="Add Node">
     </form>
-    <button class="btn btn-primary" onclick="window.location.href='/'">Back to Home</button>
 </body>
-
 </html>
