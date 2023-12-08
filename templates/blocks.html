@@ -1,113 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Mined Blocks</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        /* Custom styles for the page title and cards */
-        .page-title-container {
-            padding: 1rem 0;
-            background: rgb(0, 81, 255);
-            color: #ffffff;
-            margin-bottom: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 4rem;
-        }
-        .block-card {
-            margin-bottom: 1rem;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-        }
-        .block-header {
-            background-color: #f7f7f9;
-            padding: 0.75rem 1.25rem;
-            margin-bottom: 0;
-            border-bottom: 1px solid #e3e6ea;
-            border-top-left-radius: 0.25rem;
-            border-top-right-radius: 0.25rem;
-            font-weight: 500;
-        }
-        .block-body {
-            padding: 1.25rem;
-        }
-        .transaction-list {
-            padding-left: 20px;
-        }
-        .btn-back-container {
-            display: flex;
-            justify-content: center; /* Centers the button horizontally */
-            margin-top: 2rem;
-        }
+      /* Custom styles for the page title and cards */
+      .page-title-container {
+        padding: 1rem 0;
+        background: rgb(0, 81, 255);
+        color: #ffffff;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 4rem;
+        text-align: center;
+      }
+      .block-card {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+      }
+      .block-header {
+        background-color: #f7f7f9;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 0;
+        border-bottom: 1px solid #e3e6ea;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        font-weight: 500;
+      }
+      .block-body {
+        padding: 1.25rem;
+      }
+      .transaction-list {
+        padding-left: 20px;
+      }
+      .btn-back-container {
+        display: flex;
+        justify-content: center; /* Centers the button horizontally */
+        margin-top: 2rem;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Blockchain</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="/">Home</a>
-                <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
-                <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
-            </div>
+      <a class="navbar-brand" href="#">Blockchain</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="/">Home</a>
+          <a class="nav-item nav-link" href="/transactions/new"
+            >New Transaction</a
+          >
+          <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
         </div>
+      </div>
     </nav>
-    
 
-<div class="container">
-    <div class="page-title-container text-center">
-        <h1 class="page-title">Mined Blocks</h1>
-    </div>
-
-    <!-- Styled block content -->
-    {% for block in blocks %}
-    <div class="block-card">
-        <div class="block-header">
-            Block {{ block.index + 1 }}
-        </div>
-        <div class="block-body">
-            Timestamp: {{ block.timestamp }}<br>
-            Hash: {{ block.hash_of_previous_block }}<br>
-            Nonce: {{ block.nonce }}<br>
-            Transactions: 
-            <ul class="transaction-list">
-                {% for transaction in block.transactions %}
-                <li>{{ transaction }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    {% endfor %}
-
-    <!-- Centered 'Back to Home' button -->
-    <div class="btn-back-container">
-        <button class="btn btn-primary" onclick="window.location.href='/'">Back to Home</button>
-    </div>
-</div>
-
-<footer class="footer bg-dark text-white py-3">
     <div class="container">
-        <span class="text-white">&copy; Blockchain Project</span>
+      <div class="page-title-container text-center">
+        <h1 class="page-title">Mined Blocks</h1>
+      </div>
+
+      <!-- Styled block content -->
+      {% for block in blocks %}
+      <div class="block-card">
+        <div class="block-header">Block {{ block.index + 1 }}</div>
+        <div class="block-body">
+          Timestamp: {{ block.timestamp }}<br />
+          Hash: {{ block.hash_of_previous_block }}<br />
+          Nonce: {{ block.nonce }}<br />
+          Transactions:
+          <ul class="transaction-list">
+            {% for transaction in block.transactions %}
+            <li>{{ transaction }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- Centered 'Back to Home' button -->
+      <div class="btn-back-container">
+        <button class="btn btn-primary" onclick="window.location.href='/'">
+          Back to Home
+        </button>
+      </div>
     </div>
-</footer>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <footer class="footer bg-dark text-white py-3">
+      <div class="container">
+        <span class="text-white">&copy; Blockchain Project</span>
+      </div>
+    </footer>
 
-</body>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
 </html>

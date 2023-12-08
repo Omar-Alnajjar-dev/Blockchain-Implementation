@@ -1,195 +1,231 @@
 <!DOCTYPE html>
-<html lang="en" style="height: 100%;">
-
-<head>
-    <meta charset="UTF-8">
+<html lang="en" style="height: 100%">
+  <head>
+    <meta charset="UTF-8" />
     <title>Blockchain Interface</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        /* Custom styles for the page title */
-        .page-title-container {
-            padding: 1rem 0;
-            /* Adds top and bottom padding */
-            background: rgb(0, 81, 255);
-            /* A blue color */
-            color: #ffffff;
-            /* White color for the title text */
-            margin-bottom: 2rem;
-            /* Space below the title container */
-            border-radius: 0.5rem;
-            /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* Subtle shadow for depth */
-        }
+      /* Custom styles for the page title */
+      .page-title-container {
+        padding: 1rem 0;
+        background: rgb(0, 81, 255);
+        color: #ffffff;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
-        .page-title {
-            font-size: 2.5rem;
-            /* Increased font size */
-            font-weight: 700;
-            /* Bold font weight */
-        }
+      .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
 
-        /* Styles for the features section */
-        .features-section {
-            padding: 1.2rem 0;
-            /* Adds top and bottom padding */
-            background: #f8f9fa;
-            /* Light gray background */
-            margin-bottom: 2rem;
-            /* Space below the features section */
-            border-radius: 0.5rem;
-            /* Rounded corners */
-        }
+      /* Styles for the features section */
+      .features-section {
+        padding: 1.2rem 0;
+        background: #f8f9fa;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+      }
 
-        .features-section .fa-stack {
-            margin-bottom: 1rem;
-            /* Space below icons */
-        }
+      .features-section .fa-stack {
+        margin-bottom: 1rem;
+      }
 
-        .features-section h4 {
-            margin-bottom: 1rem;
-            /* Space below headings */
-        }
+      .features-section h4 {
+        margin-bottom: 1rem;
+      }
 
-        /* Sticky footer styles */
-        html,
-        body {
-            height: 100%;
-            /* Ensure the minimum height is the full viewport */
-            margin: 0;
-        }
+      /* Sticky footer styles */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            /* Orient the flex container vertically */
-        }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
 
-        #content {
-            flex: 1;
-            /* Allows the content to expand and fill the space */
-            display: flex;
-            flex-direction: column;
-            /* Stack elements vertically inside the content */
-        }
+      #content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
 
-        footer {
-            flex-shrink: 0;
-            /* Prevents the footer from shrinking */
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-        }
+      footer {
+        flex-shrink: 0;
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+        padding: 1rem 0;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body onload="checkSpinnerState();">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Blockchain</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="/">Home</a>
-                <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
-                <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
-            </div>
+      <a class="navbar-brand" href="#">Blockchain</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="/">Home</a>
+          <a class="nav-item nav-link" href="/transactions/new"
+            >New Transaction</a
+          >
+          <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
         </div>
+      </div>
     </nav>
 
-    <div id="content" class="container"> <!-- Content wrapper for the main content to enable flex-grow -->
-        <div class="page-title-container text-center">
-            <h1 class="page-title">Welcome to the Blockchain</h1>
-        </div>
+    <div id="content" class="container">
+      <div class="page-title-container text-center">
+        <h1 class="page-title">Welcome to the Blockchain</h1>
+      </div>
 
-        <!-- Features Section -->
-        <section class="features-section text-center">
-            <h2 class="section-heading">Features</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Security</h4>
-                    <p class="text-muted">Our blockchain uses advanced cryptography to secure transactions and control
-                        the creation of new coins.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-sync-alt fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Real-time Syncing</h4>
-                    <p class="text-muted">Stay up-to-date with real-time data synchronization across all nodes in the
-                        blockchain network.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-globe fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Decentralization</h4>
-                    <p class="text-muted">Our decentralized network ensures that the blockchain is maintained without
-                        any central authority.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Additional content goes here -->
-
+      <section class="features-section text-center">
+        <h2 class="section-heading">Features</h2>
         <div class="row">
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Mine a Block</h5>
-                        <p class="card-text">Start the mining process for a new block to earn the reward.</p>
-                        <button class="btn btn-primary btn-block"
-                            onclick="window.location.href='/mine'; document.getElementsByClassName('MineSpinner').classList.toggle('opacity-25');"><span
-                                class="spinner-border spinner-border-sm opacity-25 MineSpinner"
-                                aria-hidden="true"></span><span role="status">Mine</span></button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">New Transaction</h5>
-                        <p class="card-text">Create a new transaction to be included in the next block.</p>
-                        <button class="btn btn-primary btn-block" onclick="window.location.href='/transactions/new'">New
-                            Transaction</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Mined Blocks</h5>
-                        <p class="card-text">View blocks that have been mined and added to the blockchain.</p>
-                        <button class="btn btn-primary btn-block mine-button"
-                            onclick="window.location.href='/blocks'">View
-                            Blocks</button>
-                    </div>
-                </div>
-            </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fas fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">Security</h4>
+            <p class="text-muted">
+              Our blockchain uses advanced cryptography to secure transactions
+              and control the creation of new coins.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fas fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-sync-alt fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">Real-time Syncing</h4>
+            <p class="text-muted">
+              Stay up-to-date with real-time data synchronization across all
+              nodes in the blockchain network.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fas fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-globe fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">Decentralization</h4>
+            <p class="text-muted">
+              Our decentralized network ensures that the blockchain is
+              maintained without any central authority.
+            </p>
+          </div>
         </div>
+      </section>
+
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Mine a Block</h5>
+              <p class="card-text">
+                Start the mining process for a new block to earn the reward.
+              </p>
+              <button
+                class="btn btn-primary btn-block"
+                onclick="showSpinnerAndRedirect();"
+              >
+                <span
+                  class="spinner-border spinner-border-sm MineSpinner"
+                  aria-hidden="true"
+                  style="opacity: 0"
+                ></span>
+                <span role="status">Mine</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">New Transaction</h5>
+              <p class="card-text">
+                Create a new transaction to be included in the next block.
+              </p>
+              <button
+                class="btn btn-primary btn-block"
+                onclick="window.location.href='/transactions/new'"
+              >
+                New Transaction
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Mined Blocks</h5>
+              <p class="card-text">
+                View blocks that have been mined and added to the blockchain.
+              </p>
+              <button
+                class="btn btn-primary btn-block mine-button"
+                onclick="window.location.href='/blocks'"
+              >
+                View Blocks
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <footer class="footer">
-        <div class="container">
-            &copy; Blockchain Project
-        </div>
+      <div class="container">&copy; Blockchain Project</div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+      function showSpinnerAndRedirect() {
+        var spinner = document.querySelector(".MineSpinner");
+        if (spinner) {
+          spinner.style.opacity = "1";
+          sessionStorage.setItem("isMining", "true");
+        }
+        window.location.href = "/mine";
+      }
 
-</body>
-
+      function checkSpinnerState() {
+        var isMining = sessionStorage.getItem("isMining");
+        var spinner = document.querySelector(".MineSpinner");
+        if (window.location.pathname === "/" && isMining) {
+          // If on the home page and mining was in progress, stop the spinner and clear the state
+          spinner.style.opacity = "0";
+          sessionStorage.removeItem("isMining");
+        } else if (isMining === "true" && spinner) {
+          // If mining was in progress and not on the home page, show the spinner
+          spinner.style.opacity = "1";
+        }
+      }
+    </script>
+  </body>
 </html>
