@@ -82,30 +82,24 @@
         }
 
         .btn-back {
-            background: #007bff;
-            color: white;
+            display: block;
+            width: auto;
+            /* Allow the button to fit the text */
+            margin: 2rem auto;
+            /* Center the button and add spacing */
             padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.25rem;
+            /* Padding to increase button size */
+            background: #007bff;
+            /* Bootstrap primary color */
+            color: white;
             text-decoration: none;
-            display: inline-block;
-            /* Changed to inline-block */
-            margin-top: 2rem;
-            cursor: pointer;
-
-
-        }
-
-
-        .btn-back-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
+            border-radius: 0.25rem;
+            /* Consistent with blocks.html */
         }
 
         .btn-back:hover {
             background: #0056b3;
-
+            /* Darken the button on hover */
         }
     </style>
 </head>
@@ -140,9 +134,8 @@
             <input type="text" id="amount" name="amount" class="form-control">
             <input type="submit" value="Submit" class="btn btn-primary">
         </form>
-        <div class="btn-back-container">
-            <a href="/" class="btn btn-primary btn-back center-align">Back to Home</a>
-        </div>
+
+        <a href="/" class="btn btn-primary btn-back">Back to Home</a>
     </div>
 
     <footer class="footer bg-dark text-white py-3">
@@ -155,25 +148,18 @@
         const transactionForm = document.getElementById("transactionForm");
         transactionForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            console.log(JSON.stringify({
-                sender: document.getElementById("sender").value,
-                recipient: document.getElementById("recipient").value,
-                amount: document.getElementById("amount").value,
-            }));
+            console.log(new FormData(transactionForm));
             // sending a POST request to the server
             fetch("/transactions/new", {
                 method: "POST",
                 headers: { "Content-type": "application/json; charset=UTF-8" },
-                body: JSON.stringify({
-                    sender: document.getElementById("sender").value,
-                    recipient: document.getElementById("recipient").value,
-                    amount: document.getElementById("amount").value,
-                }),
+                body: new FormData(transactionForm)
             }).then((res) => {
                 if (res.status === 200) {
                     window.location.href = "/";
                 } else {
-                    window.location.href = "/";
+                    const error = document.getElementById("error");
+                    error.innerHTML = "Invalid transaction";
                 }
             });
         });
