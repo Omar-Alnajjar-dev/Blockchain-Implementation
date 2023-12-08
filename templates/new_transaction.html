@@ -88,22 +88,24 @@
             border: none;
             border-radius: 0.25rem;
             text-decoration: none;
-            display: inline-block; /* Changed to inline-block */
+            display: inline-block;
+            /* Changed to inline-block */
             margin-top: 2rem;
             cursor: pointer;
 
-            
+
         }
 
 
         .btn-back-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-      }
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
         .btn-back:hover {
             background: #0056b3;
-            
+
         }
     </style>
 </head>
@@ -139,7 +141,7 @@
             <input type="submit" value="Submit" class="btn btn-primary">
         </form>
         <div class="btn-back-container">
-        <a href="/" class="btn btn-primary btn-back center-align">Back to Home</a>
+            <a href="/" class="btn btn-primary btn-back center-align">Back to Home</a>
         </div>
     </div>
 
@@ -153,18 +155,25 @@
         const transactionForm = document.getElementById("transactionForm");
         transactionForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            console.log(new FormData(transactionForm));
+            console.log(JSON.stringify({
+                sender: document.getElementById("sender").value,
+                recipient: document.getElementById("recipient").value,
+                amount: document.getElementById("amount").value,
+            }));
             // sending a POST request to the server
             fetch("/transactions/new", {
                 method: "POST",
                 headers: { "Content-type": "application/json; charset=UTF-8" },
-                body: new FormData(transactionForm)
+                body: JSON.stringify({
+                    sender: document.getElementById("sender").value,
+                    recipient: document.getElementById("recipient").value,
+                    amount: document.getElementById("amount").value,
+                }),
             }).then((res) => {
                 if (res.status === 200) {
                     window.location.href = "/";
                 } else {
-                    const error = document.getElementById("error");
-                    error.innerHTML = "Invalid transaction";
+                    window.location.href = "/";
                 }
             });
         });
