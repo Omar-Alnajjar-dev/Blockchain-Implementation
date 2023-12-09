@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Node Totals</title>
+</head>
+<body>
+    <h1>Decrypted Totals for Nodes</h1>
+    <ul>
+        {% for node, total in node_totals.items() %}
+            <li>{{ node }}: {{ total }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
