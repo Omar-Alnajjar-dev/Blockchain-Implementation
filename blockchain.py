@@ -73,7 +73,6 @@ class Blockchain(object):
     def add_transaction(self, sender, recipient, amount):
         with self.lock:
             balances = self.calculate_balances()
-            print(balances)
             for block in self.chain:
                 for tx in block['transactions']:
                     if tx['sender'] == sender and tx['sender'] != '0':
@@ -251,8 +250,6 @@ def vote():
         for port in candidate_ports:
             amount = 0 if port != candidate_port else 1
             blockchain.add_transaction(sender='0', recipient=port, amount=blockchain.crpyt.encrypt(amount))
-            print(port)
-            print(candidate_port)
         response = {'message': 'Vote recorded'}
         return jsonify(response), 200
     elif request.method =="GET":
