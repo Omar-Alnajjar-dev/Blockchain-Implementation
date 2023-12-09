@@ -1,9 +1,9 @@
 # Blockchain-Implementation
 Decentralized Voting System Utilizing Blockchain and Homomorphic Encryption
 
+# Projcet Structure (The Directory Tree)
 
-
-The Directory Tree
+```
 .
 ├── Paillier.py
 ├── README.md
@@ -20,4 +20,4 @@ The Directory Tree
 │   ├── sync_nodes.html
 │   └── vote_page.html
 └── tree.txt
-
+```
