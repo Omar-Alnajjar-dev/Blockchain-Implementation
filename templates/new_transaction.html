@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Transaction</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Reset default margin and padding */
+        body, h1, h2, h3, h4, h5, h6, p, ul, ol, figure, figcaption {
+            margin: 0;
+            padding: 0;
+        }
+        /* Custom styles for the page title and form */
+        .page-title-container {
+            padding: 1rem 0;
+            background: rgb(0, 81, 255);
+            color: #ffffff;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        footer {
+            background-color: #343a40; /* Dark gray background */
+            color: white; /* White text color */
+            text-align: center; /* Centered text */
+            padding: 1rem 0; /* Padding for top and bottom */
+            position: fixed; /* Fixed at the bottom */
+            bottom: 0; /* Stick to the bottom */
+            left: 0; /* Span across all the way to the left */
+            width: 100%; /* Full width */
+        }
+        
+        /* Ensure the .container class inside footer is full width */
+        .footer .container {
+            width: 100%;
+            max-width: none; /* Override Bootstrap's max-width for containers */
+        }
+        form {
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        label, input {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        input[type="text"] {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        .btn-back {
+            display: block;
+            width: auto;
+            margin: 2rem auto;
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.25rem;
+        }
+        .btn-back-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 8rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Blockchain</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/">Home</a>
+                <a class="nav-item nav-link active" href="/transactions/new">New Transaction</a>
+                <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title-container">
+            <h1 class="page-title">New Transaction</h1>
+        </div>
+
+        <form id="transactionForm" method="post" action="/transactions/new">
+            <label for="sender"><b>Sender:</b></label>
+            <input type="text" id="sender" name="sender" class="form-control">
+            <label for="recipient"><b>Recipient:</b></label>
+            <input type="text" id="recipient" name="recipient" class="form-control">
+            <label for="amount"><b>Amount:</b></label>
+            <input type="text" id="amount" name="amount" class="form-control">
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+
+        <div class="btn-back-container">
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+
+    
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; Blockchain Project</span>
+        </div>
+    </footer>
+
+
+    <script>
+        const transactionForm = document.getElementById("transactionForm");
+        transactionForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            var formData = new FormData(transactionForm);
+            fetch("/transactions/new", {
+                method: "POST",
+                body: formData
+            }).then(function(response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(function(jsonResponse) {
+                window.location.href = "/";
+            }).catch(function(error) {
+                console.log('There has been a problem with your fetch operation: ', error.message);
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mined Block Details</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .page-title-container {
+      padding: 1rem 0;
+      background: rgb(0, 81, 255);
+      color: #ffffff;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    .footer {
+            background-color: #343a40; /* Dark gray background */
+            color: white; /* White text color */
+            text-align: center; /* Centered text */
+            padding: 1rem 0; /* Padding for top and bottom */
+            position: fixed; /* Fixed at the bottom */
+            bottom: 0; /* Stick to the bottom */
+            left: 0; /* Span across all the way to the left */
+            width: 100%; /* Full width */
+        }
+        
+        /* Ensure the .container class inside footer is full width */
+        .footer .container {
+            width: 100%;
+            max-width: none; /* Override Bootstrap's max-width for containers */
+        }
+    .block-table {
+      margin-bottom: 1rem;
+      border-collapse: collapse;
+      width: 100%;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .block-table, .block-table th, .block-table td {
+      border: 1px solid #dee2e6;
+    }
+    .block-table th, .block-table td {
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .block-table th {
+      background-color: #f7f7f9;
+      font-weight: 500;
+    }
+    .btn-back-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Blockchain</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="/">Home</a>
+        <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
+        <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-title-container text-center">
+      <h1 class="page-title">Mined Block Details</h1>
+    </div>
+
+    <table class="block-table">
+      <thead>
+        <tr>
+          <th>Block Number</th>
+          <th>Timestamp</th>
+          <th>Hash of Previous Block</th>
+          <th>Nonce</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ block.index + 1 }}</td>
+          <td>{{ block.timestamp }}</td>
+          <td>{{ block.hash_of_previous_block }}</td>
+          <td>{{ block.nonce }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btn-back-container">
+      <button class="btn btn-primary" onclick="window.location.href='/'">Back to Home</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+        <span>&copy; Blockchain Project</span>
+    </div>
+</footer>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
