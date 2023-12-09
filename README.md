@@ -1,6 +1,3 @@
-# Blockchain-Implementation
-Decentralized Voting System Utilizing Blockchain and Homomorphic Encryption
-
 # DeceVo: Decentralized Voting System Utilizing Blockchain and Homomorphic Encryption
 
 DeceVo is voting system designed to leverage the security and transparency of blockchain technology, along with the privacy-preserving characteristics of homomorphic encryption. This project aims to provide a framework for conducting secure, anonymous, and verifiable online elections.
