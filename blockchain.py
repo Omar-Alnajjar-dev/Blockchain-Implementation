@@ -73,6 +73,7 @@ class Blockchain(object):
     def add_transaction(self, sender, recipient, amount):
         with self.lock:
             balances = self.calculate_balances()
+            print(balances)
             for block in self.chain:
                 for tx in block['transactions']:
                     if tx['sender'] == sender and tx['sender'] != '0':
@@ -85,6 +86,25 @@ class Blockchain(object):
                 'amount': amount,
             })
             return self.last_block['index'] + 1
+   
+    def decrypt_candidate_totals(self):
+        decrypted_totals = {}
+        neighbours = self.nodes
+        candidate_ports = [node[0] for node in neighbours if node[1] == 'C']
+        for candidate_port, encrypted_total in self.candidates.items():
+            # Decrypt each candidate's total
+            decrypted_total = self.crpyt.decrypt(encrypted_total)
+            decrypted_totals[candidate_port] = decrypted_total
+
+        return decrypted_totals
+
+    def find_winner(self):
+        decrypted_totals = self.decrypt_candidate_totals()
+
+        # Find the candidate's port with the highest total
+        winner = max(decrypted_totals, key=decrypted_totals.get)
+        return winner
+
 
     @property
     def last_block(self):
@@ -200,26 +220,12 @@ def mine_block_page():
 def show_blocks():
     return render_template('blocks.html', blocks=blockchain.chain)
 
-
-@app.route('/nodes/node_totals', methods=['GET'])
-def node_totals():
-    node_votes = {}
-    
-    for block in blockchain.chain:
-        for tx in block['transactions']:
-            recipient = tx['recipient']
-            amount = tx['amount']
-            if recipient.startswith("127.0.0.1:"):
-                if recipient not in node_votes:
-                    node_votes[recipient] = blockchain.crpyt.encrypt(0)
-                node_votes[recipient] = node_votes[recipient]*amount  # Accumulate votes for each node
-
-    decrypted_totals = {}
-    for node, encrypted_amount in node_votes.items():
-        decrypted_amount = blockchain.crpyt.decrypt(encrypted_amount)
-        decrypted_totals[node] = decrypted_amount  # Decrypt and store node-wise totals
-
-    return render_template('node_totals.html', node_totals=decrypted_totals)
+# Determining the winner
+@app.route('/result', methods=['GET'])
+def get_winner():
+    winner_port = blockchain.find_winner()
+    response = {'winner_port': winner_port}
+    return jsonify(response), 200
 
 
 @app.route('/nodes/add_node', methods=['GET', 'POST'])
@@ -250,6 +256,8 @@ def vote():
         for port in candidate_ports:
             amount = 0 if port != candidate_port else 1
             blockchain.add_transaction(sender='0', recipient=port, amount=blockchain.crpyt.encrypt(amount))
+            print(port)
+            print(candidate_port)
         response = {'message': 'Vote recorded'}
         return jsonify(response), 200
     elif request.method =="GET":
