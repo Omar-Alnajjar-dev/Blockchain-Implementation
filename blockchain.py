@@ -253,7 +253,9 @@ def vote():
         response = {'message': 'Vote recorded'}
         return jsonify(response), 200
     elif request.method =="GET":
-        return render_template('vote_page.html')
+        neighbours = blockchain.nodes
+        candidate_ports = [node[0] for node in neighbours if node[1] == 'C']
+        return render_template('vote_page.html', candidates=candidate_ports)
 
 @app.route('/nodes/sync', methods=['GET', 'POST'])
 def sync_nodes():
