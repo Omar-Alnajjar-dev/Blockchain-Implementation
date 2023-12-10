@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mined Blocks</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .page-title-container {
+            padding: 1rem 0;
+            background: rgb(0, 81, 255);
+            color: white;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .footer {
+            background-color: #343a40; /* Dark gray background */
+            color: white; /* White text color */
+            text-align: center; /* Centered text */
+            padding: 1rem 0; /* Padding for top and bottom */
+            position: fixed; /* Fixed at the bottom */
+            bottom: 0; /* Stick to the bottom */
+            left: 0; /* Span across all the way to the left */
+            width: 100%; /* Full width */
+        }
+        
+        /* Ensure the .container class inside footer is full width */
+        .footer .container {
+            width: 100%;
+            max-width: none; /* Override Bootstrap's max-width for containers */
+        }
+        .block-table {
+            margin-bottom: 2rem;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            border-radius: 0.5rem; /* Rounded corners for tables */
+            overflow: hidden; /* Ensures the inner elements adhere to the table's border radius */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
+        }
+        .block-table th, .block-table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .block-table th {
+            background-color: #f7f7f9;
+            font-weight: 500;
+            width: 30%;
+        }
+        .block-table td {
+            width: 70%;
+        }
+        .btn-back-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 8rem;
+        }
+        .btn-back {
+            background-color: #007bff;
+            color: white;
+            border-radius: 0.25rem;
+            border: none;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Blockchain</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="/">Home</a>
+                <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
+                <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
+                <a class="nav-item nav-link" href="/nodes/add_node">Add Node</a>
+                <a class="nav-item nav-link" href="/vote">Vote</a>
+
+                <a class="nav-item nav-link" href="/nodes/node_totals">Result</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title-container text-center">
+            <h1 class="page-title">Mined Blocks</h1>
+        </div>
+
+        <!-- Vertical Tables for Mined Blocks -->
+        {% for block in blocks %}
+        {% set index = 0 %}
+        <table class="block-table">
+            <tr>
+                <th>Block Number</th>
+                <td>{{ block.index + 1 }}</td>
+            </tr>
+            <tr>
+                <th>Timestamp</th>
+                <td>{{ block.timestamp }}</td>
+            </tr>
+            <tr>
+                <th>Hash</th>
+                <td>{{ block.hash_of_previous_block }}</td>
+            </tr>
+            <tr>
+                <th>Nonce</th>
+                <td>{{ block.nonce }}</td>
+            </tr>
+            {% for transaction in block.transactions %}
+            <tr>
+                        <th>Transaction index</th>
+                        <td>{{ index + loop.index }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sender</th>
+                        <td>{{ transaction.sender }}</td>
+                    </tr>
+                    <tr>
+                        <th>Recipient</th>
+                        <td>{{ transaction.recipient }}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>{{ transaction.amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+        {% endfor %}
+
+        <div class="btn-back-container">
+            <button class="btn btn-primary" onclick="window.location.href='/'">Back to Home</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; Blockchain Project</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

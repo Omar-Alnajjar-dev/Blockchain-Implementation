@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        .page-title-container {
+            padding: 1rem 0;
+            background: rgb(0, 81, 255);
+            color: white;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .form-container {
+            background-color: #f7f7f9;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        label, input[type="text"], input[type="submit"] {
+            font-weight: bold;
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            background-color: #343a40; /* Dark gray background */
+            color: white; /* White text color */
+            text-align: center; /* Centered text */
+            padding: 1rem 0; /* Padding for top and bottom */
+            position: fixed; /* Fixed at the bottom */
+            bottom: 0; /* Stick to the bottom */
+            left: 0; /* Span across all the way to the left */
+            width: 100%; /* Full width */
+        }
+        
+        /* Ensure the .container class inside footer is full width */
+        .footer .container {
+            width: 100%;
+            max-width: none; /* Override Bootstrap's max-width for containers */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/">Home</a>
+            <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
+            <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
+            <a class="nav-item nav-link" href="/nodes/add_node">Add Node</a>
+            <a class="nav-item nav-link" href="/vote">Vote</a>
+            <a class="nav-item nav-link" href="/nodes/node_totals">Result</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title-container text-center">
+            <h1 class="page-title">Vote Page</h1>
+        </div>
+
+        <div class="form-container">
+            <h2>Enter Candidate Port:</h2>
+            <form method="POST">
+                <input type="text" name="candidate_port" placeholder="Candidate Port" list="candidate_list"><br><br>
+                <datalist id="candidate_list">
+                    {% for candidate in candidates %}
+                    <option value={{candidate}}></option>
+                        {% endfor %}
+                </datalist>
+                <input type="submit" value="Vote">
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; Blockchain Project</span>
+        </div>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
