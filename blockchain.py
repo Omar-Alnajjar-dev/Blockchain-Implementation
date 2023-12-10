@@ -78,7 +78,7 @@ class Blockchain(object):
                 for tx in block['transactions']:
                     if tx['sender'] == sender and tx['sender'] != '0':
                         raise ValueError('The coin has already been spent')
-            if balances.get(sender, 0) < amount and sender != '0':
+            if int(balances.get(sender, 0)) < int(amount) and sender != '0':
                 raise ValueError('Insufficient balance')
             self.current_transactions.append({
                 'sender': sender,
