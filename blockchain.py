@@ -156,17 +156,11 @@ class Blockchain(object):
             return True
         return False
     
-    # # create afunction that genrates a public and private key
-    # def generate_keys(self):
-    #     r_private_key , r_public_key = rsa_genKeys()
-    #     return r_private_key, r_public_key
 
 app = Flask(__name__, template_folder='templates')
-node_identifier_list = []
-node_identifier_list.append(str(uuid4()).replace('_', ""))
-# node_coins = []
+node_identifier = str(uuid4()).replace('_', "")
 blockchain = Blockchain()
-# node_coins.append(blockchain.generate_keys())
+blockchain.add_transaction(sender="0", recipient=node_identifier, amount=blockchain.crpyt.encrypt(1))
 
 @app.route('/')
 def home():
@@ -198,10 +192,7 @@ def full_chain():
 
 @app.route('/mine', methods=['GET'])
 def mine_block_page():
-    # node_coins.append(blockchain.generate_keys())
-    # coin_address = rsa_encrypt(node_coins[-1][1], int(node_identifier.replace('-', ''), 16))
-    node_identifier_list.append(str(uuid4()).replace('_', ""))
-    blockchain.add_transaction(sender="0", recipient=node_identifier_list[-2], amount=1)
+    blockchain.add_transaction(sender="0", recipient=node_identifier, amount=blockchain.crpyt.encrypt(0))
     last_block_hash = blockchain.hash_block(blockchain.last_block)
     index = len(blockchain.chain)
     nonce = blockchain.proof_of_work(index, last_block_hash, blockchain.current_transactions)
