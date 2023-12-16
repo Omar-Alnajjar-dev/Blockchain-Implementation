@@ -2,6 +2,8 @@ from collections import namedtuple
 import secrets
 import numpy as np
 
+
+
 PrivateKey = namedtuple("PrivateKey", ["lam", "mu"])
 PublicKey = namedtuple("PublicKey", ["g", "n", "n_squared"])
 
