@@ -1,14 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
     <title>Node Totals</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .page-title-container {
+            padding: 1rem 0;
+            background: rgb(0, 81, 255);
+            color: #ffffff;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .footer .container {
+            width: 100%;
+            max-width: none;
+        }
+
+        .block-table {
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .block-table,
+        .block-table th,
+        .block-table td {
+            border: 1px solid #dee2e6;
+        }
+
+        .block-table th,
+        .block-table td {
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .block-table th {
+            background-color: #f7f7f9;
+            font-weight: 500;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Decrypted Totals for Nodes</h1>
-    <ul>
-        {% for node, total in node_totals.items() %}
-            <li>{{ node }}: {{ total }}</li>
-        {% endfor %}
-    </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Blockchain</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="/">Home</a>
+                <a class="nav-item nav-link" href="/transactions/new">New Transaction</a>
+                <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
+                <a class="nav-item nav-link" href="/nodes/add_node">Add Node</a>
+                <a class="nav-item nav-link" href="/vote">Vote</a>
+                <a class="nav-item nav-link" href="/nodes/node_totals">Result</a>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title-container text-center">
+            <h1 class="page-title">Decrypted Totals for Nodes</h1>
+        </div>
+
+        <table class="block-table">
+            <thead>
+                <tr>
+                    <th>Node</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for node, total in node_totals.items() %}
+                <tr>
+                    <td>{{ node }}</td>
+                    <td>{{ total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; Blockchain Project</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

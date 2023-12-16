@@ -88,6 +88,8 @@
                 <a class="nav-item nav-link" href="/blocks">Mined Blocks</a>
                 <a class="nav-item nav-link" href="/nodes/add_node">Add Node</a>
                 <a class="nav-item nav-link" href="/vote">Vote</a>
+
+                <a class="nav-item nav-link" href="/nodes/node_totals">Result</a>
             </div>
         </div>
     </nav>
@@ -99,6 +101,7 @@
 
         <!-- Vertical Tables for Mined Blocks -->
         {% for block in blocks %}
+        {% set index = 0 %}
         <table class="block-table">
             <tr>
                 <th>Block Number</th>
@@ -118,19 +121,23 @@
             </tr>
             {% for transaction in block.transactions %}
             <tr>
-                <th>Sender</th>
-                <td>{{ transaction.sender }}</td>
-            </tr>
-            <tr>
-                <th>Recipient</th>
-                <td>{{ transaction.recipient }}</td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td>{{ transaction.amount }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+                        <th>Transaction index</th>
+                        <td>{{ index + loop.index }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sender</th>
+                        <td>{{ transaction.sender }}</td>
+                    </tr>
+                    <tr>
+                        <th>Recipient</th>
+                        <td>{{ transaction.recipient }}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>{{ transaction.amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
         {% endfor %}
 
         <div class="btn-back-container">

@@ -175,15 +175,23 @@ app = Flask(__name__, template_folder='templates')
 node_identifier = str(uuid4()).replace('_', "")
 blockchain = Blockchain()
 blockchain.add_transaction(sender="0", recipient=node_identifier, amount=blockchain.crpyt.encrypt(1))
+blockchain.add_node(("http://127.0.0.1:10000", "C"))
+blockchain.add_node(("http://127.0.0.1:20000", "C"))
+for nodeNum in range(1, 6):
+    if int(f"500{nodeNum}") == int(sys.argv[1]):
+        continue
+    node_address = f"http://127.0.0.1:500{nodeNum}"
+    blockchain.add_node((node_address, "V"))
+
 
 @app.route('/')
 def home():
+    blockchain.update_blockchain()
     return render_template('index.html')
 
 
 @app.route('/transactions/new', methods=['GET', 'POST'])
 def new_transaction():
-    blockchain.update_blockchain()
     if request.method == 'POST':
         values = request.get_json()
         required_fields = ['sender', 'recipient', 'amount']
